@@ -1,12 +1,21 @@
-# Create your views here.
-import sys
-import traceback
-import json
-import operator
-import logging
-import settings
 import datetime
 import HTMLParser
+import json
+import logging
+import operator
+from storages.backends.s3boto import S3BotoStorage
+import sys
+import traceback
+
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.views.decorators.http import require_POST
+
+from c2g.models import Exam, ExamRecord
+from courses.actions import auth_view_wrapper, auth_is_course_admin_view_wrapper
+import settings
+
 
 FILE_DIR = getattr(settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
 AWS_ACCESS_KEY_ID = getattr(settings, 'AWS_ACCESS_KEY_ID', '')
@@ -14,21 +23,6 @@ AWS_SECRET_ACCESS_KEY = getattr(settings, 'AWS_SECRET_ACCESS_KEY', '')
 AWS_SECURE_STORAGE_BUCKET_NAME = getattr(settings, 'AWS_SECURE_STORAGE_BUCKET_NAME', '')
 
 logger = logging.getLogger(__name__)
-
-from c2g.models import Exercise, Video, VideoToExercise, ProblemSet, ProblemSetToExercise, Exam, ExamRecord
-from django.http import HttpResponse, HttpResponseBadRequest, Http404, HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import Context, loader
-from django.template import RequestContext
-from django.core.exceptions import MultipleObjectsReturned
-from courses.actions import auth_view_wrapper, auth_is_course_admin_view_wrapper
-from django.views.decorators.http import require_POST
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.core.urlresolvers import reverse
-
-from django.views.decorators.csrf import csrf_protect
-from storages.backends.s3boto import S3BotoStorage
 
 
 @auth_view_wrapper
@@ -144,7 +138,7 @@ def view_submissions_to_grade(request, course_prefix, course_suffix, exam_slug):
     s3file.write(outfile.read())
     s3file.close()
     outfile.close()
-    return HttpResponseRedirect(secure_file_storage.url("/%s/%s/reports/exams/%s" % (course_prefix, course_suffix, fname), response_headers={'response-content-disposition': 'attachment'}))
+    return HttpResponseRedirect(secure_file_storage.url_monkeypatched("/%s/%s/reports/exams/%s" % (course_prefix, course_suffix, fname), response_headers={'response-content-disposition': 'attachment'}))
 
 def parse_val(v):
     """Helper function to parse AJAX submissions"""

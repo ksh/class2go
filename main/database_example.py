@@ -1,3 +1,4 @@
+# Don't forget to actually create the database named NAME
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -76,3 +77,8 @@ PIAZZA_SECRET = "piazza_xxxxxxx"
 SES_SMTP_USER = "USER"
 SES_SMTP_PASSWD = "PWD"
 
+# class2go relies on Youtube pretty heavily. You need to have an API key 
+# with youtube application integration enabled
+YT_SERVICE_DEVELOPER_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+GOOGLE_CLIENT_ID = "NNNNNNNNNNNN.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET = "YYYYYYYYYYYYYYYYYYYYYYYY"

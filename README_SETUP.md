@@ -1,18 +1,16 @@
 Setting up Your Class2Go Dev Environment
 ========================================
 
-These instructions should help you get started setting up a dev
-environment.  You should be able to do most of your developmnet on
-your laptop by running a local database (mysqld) and storing files
-locally instead of in S3.
+These instructions should help you get started setting up a dev environment.
+You should be able to do most of your developmnet on your laptop by running a
+local database (mysqld) and storing files locally instead of in S3.
 
-The majority of our dev team uses Macs, so the Mac instructions are
-genereally the most up to date.  But we do have some developers who
-have had windows or Ubuntu Linux as their day-to-day dev machines, so
-we know it works.
+The majority of our dev team uses Macs, so the Mac instructions are genereally
+the most up to date.  But we do have some developers who have had windows or
+Ubuntu Linux as their day-to-day dev machines, so we know it works.
 
-If you have suggestions how to improve these notes, please improve
-them and send us a pull request!
+If you have suggestions how to improve these notes, please improve them and
+send us a pull request!
 
 * [Mac OS X](#mac)
 * [Windows](#windows)
@@ -20,8 +18,8 @@ them and send us a pull request!
 * [Configuring Django](#config)
 * [Generating Test Data](#testdata)
 
-It is a big step to go from a dev instance to a full-on deployed 
-cloud instance.  Instructions for that are forthcoming.
+It is a big step to go from a dev instance to a full-on deployed cloud
+instance.  Instructions for that are forthcoming.
 
 <a id="mac"></a>
 For Mac
@@ -34,13 +32,12 @@ General Instructions:
 * Set-up Django
 * Set-up Mysql
 
-For MAC OS-X Lion: Instructions mainly taken from 
+For MAC OS-X Lion: Instructions mainly taken from
 http://www.tlswebsolutions.com/mac-os-x-lion-setting-up-django-pip-virtualenv-and-homebrew/
 
-Some people don't have their normal user set up with write permissions
-for all these commands that modify the environment (brew, easy_install,
-pip).  For all of those you should plan on running your own sudo
-prefix for these.
+Some people don't have their normal user set up with write permissions for all
+these commands that modify the environment (brew, easy_install, pip).  For all
+of those you should plan on running your own sudo prefix for these.
 
 1. Install XCode from the Apple App Store Version 4.5 or later
 
@@ -88,17 +85,16 @@ prefix for these.
     virtualenv sophi-venv --no-site-packages    
     ```
 
-    This should create the sophi-venv directory under the
-    directory where this README is found.  All our django stuff
-    will happen in there now.
+    This should create the sophi-venv directory under the directory where this
+    README is found.  All our django stuff will happen in there now.
 
 9. Start using the virtual environment that we just created.  
 
     . ./sophi-venv/bin/activate
 
-    WARNING:  you need to do this from whatever shell you're using.
-    You can tell this because is puts an environment indicator at
-    the beginning of your prompt
+    WARNING:  you need to do this from whatever shell you're using.  You can
+    tell this because is puts an environment indicator at the beginning of your
+    prompt
 
 10. Install django itself (this will be inside the virtualenv)
 
@@ -120,7 +116,8 @@ prefix for these.
     pip install PIL
     ```
 
-13. Install South, the database schema migration tool: (this will be inside the virtualenv)
+13. Install South, the database schema migration tool: (this will be inside the
+virtualenv)
 
     ```
     pip install South
@@ -139,17 +136,13 @@ prefix for these.
     pip install gdata
     ```
 
-16. Patch GData and storages
-
-    (instructions coming)
-
-17. Install Celery ecosystem
+16. Install Celery ecosystem
 
     ```
     pip install django-celery django-celery-email pytz
     ```
 
-18. Setup the acocunt and database in MySql
+17. Setup the acocunt and database in MySql
 
     ```
     create database class2go;  
@@ -157,7 +150,7 @@ prefix for these.
     grant all on class2go.* to class2go@'127.0.0.1' identified by 'class2gopw';  
     ```
 
-19. Set up some folders for logs and the celery database. The sqlite3 folder can be anywhere that is writable.
+18. Set up some folders for logs and the celery database. The sqlite3 folder can be anywhere that is writable.
 
     ```
     mkdir /var/log/django/  
@@ -165,8 +158,9 @@ prefix for these.
     mkdir /Users/account/sqlite3/  
     ```
 
-20. In the main folder, make a copy of database_example.py to database.py 
-and edit the DATABASES strings as follows substituting proper values for your system.
+19. In the main folder, make a copy of database_example.py to database.py and
+edit the DATABASES strings as follows substituting proper values for your
+system.
 
     ```
     DATABASES = {  
@@ -185,7 +179,7 @@ and edit the DATABASES strings as follows substituting proper values for your sy
     }  
     ```
 
-21. Setup initial db from the main folder
+20. Setup initial db from the main folder
 
     ```
     ./manage.py syncdb  
@@ -194,16 +188,17 @@ and edit the DATABASES strings as follows substituting proper values for your sy
     ./manage.py migrate --database=celery  
     ```
 
-    At this point you should be able to look at the django database in
-    your local mysql and see a bunch of c2g_* tables.  Yay.
+    At this point you should be able to look at the django database in your
+    local mysql and see a bunch of c2g_* tables.  Yay.
 
-22. From the main folder, run server on whatever port you want:
+21. From the main folder, run server on whatever port you want:
 
     ```
-    python manage.py runserver 8100
+    python manage.py runserver 8000
     ```
 
-23. Visit localhost:8100 in your web browser and confirm that you get a C2G page.
+22. Visit localhost:8000 in your web browser and confirm that you get a C2G
+page.
 
 
 
@@ -227,10 +222,11 @@ Steps:
 
 1. Install Eclipse
 
-2. Install Egit and configure it to the github repos (https://github.com/Stanford-Online/class2go)
-    For this you would need Jason to set you up with access to this repos.
-    Note, when configuring the Remote Push Url you'll need to add ".git" on the end:
-    (git clone https://github.com/Stanford-Online/class2go.git)
+2. Install Egit and configure it to the github repos
+(https://github.com/Stanford-Online/class2go) For this you would need Jason to
+set you up with access to this repos.  Note, when configuring the Remote Push
+Url you'll need to add ".git" on the end: (git clone
+https://github.com/Stanford-Online/class2go.git)
 
 
 **Requirements**
@@ -252,31 +248,36 @@ Steps:
 
 4. Copy database.example.py to database.py.
 
-5. In database.py, append ‘mysql’ to ENGINE, and enter the name of the database you created in step 1, and the credentials of an authorized user of the database (user ‘root’ and empty password may work on MySQL unless you specified otherwise during the MySQL setup)
+5. In database.py, append 'mysql' to ENGINE, and enter the name of the
+database you created in step 1, and the credentials of an authorized user of
+the database (user 'root' and empty password may work on MySQL unless you
+specified otherwise during the MySQL setup)
 
-6. Make sure you’re in the src/class2go/main directory (wherever that is for you)
+6. Make sure you're in the src/class2go/main directory (wherever that is for you)
 
-7. ‘python manage.py syncdb’ followed by ‘python manage.py migrate’ to create the required database tables and make sure the schema is up to date.
-You will be asked to create your admin account on the way. Skip it. You will later be able to create a user and promote it to admin manually using your DBMS client.
+7. 'python manage.py syncdb' followed by 'python manage.py migrate' to create
+the required database tables and make sure the schema is up to date.  You will
+be asked to create your admin account on the way. Skip it. You will later be
+able to create a user and promote it to admin manually using your DBMS client.
 
-8. XX -- ‘python manage.py collectstatic    ’ to copy all static files to the directory specified in settings.py.
+8. XX -- 'python manage.py collectstatic    ' to copy all static files to the 
+directory specified in settings.py.
 
-9. ‘python manage.py runserver xxxx’ to run a dev server on port number xxxx. Example: xxxx = 8000
+9. 'python manage.py runserver xxxx' to run a dev server on port number xxxx. 
+Example: xxxx = 8000
 
-10. Visit localhost:xxxx in your web browser and confirm that you get a C2G page.
-
-
+10. Visit localhost:xxxx in your web browser and confirm that you get a C2G
+page.
 
 
 <a id="linux"></a>
 For Linux
 -----------------
 
-This assumes you have mysql and python installed, and you've logged
-into mysql and created the c2g database ('create database c2g;').
-These instructions also include info for virtualenvwrapper, which
-contains useful tools for virtualenv. virtualenvwrapper can also
-be installed for Mac (and probably Windows too)
+This assumes you have mysql and python installed, and you've logged into mysql
+and created the c2g database ('create database c2g;').  These instructions also
+include info for virtualenvwrapper, which contains useful tools for virtualenv.
+virtualenvwrapper can also be installed for Mac (and probably Windows too)
 
 1. Install pip:
 
@@ -332,7 +333,8 @@ be installed for Mac (and probably Windows too)
 
         mkdir -p $PROJECT_HOME 
 
-12. Issue command to set up new project subdirectory and link it to virtual env:
+12. Issue command to set up new project subdirectory and link it to virtual
+env:
 
         mkproject class2go
 
@@ -344,7 +346,8 @@ be installed for Mac (and probably Windows too)
 
         git clone https://github.com/Stanford-Online/class2go.git .
 
-15. Check out where your mysql is installed, make sure mysql_config exists in the dir:
+15. Check out where your mysql is installed, make sure mysql_config exists in
+the dir:
 
         ls `which mysql`
 
@@ -394,8 +397,8 @@ be installed for Mac (and probably Windows too)
 26. Run syncdb to create database tables 
 
         ./manage.py syncdb
-    Might need to issue "syncdb" command a couple times if there are errors. The 
-    first time, it will ask you for username and password for the database 
+    Might need to issue "syncdb" command a couple times if there are errors. 
+    The first time, it will ask you for username and password for the database
 
 27. Migrate user stuff over: 
 
@@ -420,8 +423,8 @@ be installed for Mac (and probably Windows too)
 
 When you want to start working on your project, just do the following:
     workon class2go
-    cd project (shouldn't be necessary, as workon command will automatically cd to project dir, but use it if you need to)
-    python manage.py runserver 8100
+    cd project #unnecessary, as workon command should cd to project dir
+    python manage.py runserver 8000
 
 
 <a id="config"></a>
