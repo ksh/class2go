@@ -12,22 +12,23 @@
 # any table indexes that use multiple columns are placed in a south migration at
 # <location to be inserted>
 
-from django.db import models
-from django.contrib.auth.models import User, Group
-from django.db.models.signals import post_save
-from django import forms
 from datetime import datetime
-from django.core.exceptions import ValidationError
-from hashlib import md5
-
 import gdata.youtube
 import gdata.youtube.service
+from hashlib import md5
 import os
-import time
 import sys
+import time
 
-# For file system upload
-from django.core.files.storage import FileSystemStorage
+from django import forms
+from django.contrib.auth.models import Group, User
+from django.core.exceptions import ValidationError
+from django.core.files.storage import DefaultStorage, get_storage_class, FileSystemStorage
+from django.db.models.signals import post_save
+from django.db import models
+
+import c2g.util
+
 
 def get_file_path(instance, filename):
     parts = str(instance.handle).split("--")
@@ -457,10 +458,11 @@ class File(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
         self.save()
 
     def dl_link(self):
+        # File
         if not self.file.storage.exists(self.file.name):
             return ""
         
-        url = self.file.storage.url(self.file.name, response_headers={'response-content-disposition': 'attachment'})
+        url = self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
         return url
 
     def __unicode__(self):
@@ -846,9 +848,10 @@ class Video(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
         return True
 
     def dl_link(self):
+        # Video
         if not self.file.storage.exists(self.file.name):
             return ""
-        return self.file.storage.url(self.file.name, response_headers={'response-content-disposition': 'attachment'})
+        return self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
 
     def ret_url(self):
         return "https://www.youtube.com/analytics#dt=lt,fi=v-" + self.url + ",r=retention"

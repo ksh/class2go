@@ -210,7 +210,7 @@ def get_course_materials(common_page_data, get_video_content=False, get_pset_con
                         
                         if common_page_data['course_mode'] == 'draft':
                             prod_video = video.image
-                            if not prod_video.live_datetime:
+                            if not prod_video or not prod_video.live_datetime:
                                 visible_status = "<span style='color:#A00000;'>Not Live</span>"
                             else:
                                 if prod_video.live_datetime > datetime.datetime.now():
