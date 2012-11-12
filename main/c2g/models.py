@@ -17,6 +17,7 @@ import gdata.youtube
 import gdata.youtube.service
 from hashlib import md5
 import os
+import re
 import sys
 import time
 
@@ -27,7 +28,11 @@ from django.core.files.storage import DefaultStorage, get_storage_class, FileSys
 from django.db.models.signals import post_save
 from django.db import models
 
-import c2g.util
+from c2g.util import is_storage_local, get_site_url
+from kelvinator.tasks import sizes as video_resize_options 
+
+
+RE_S3_PATH_FILENAME_SPLIT = re.compile('(?P<path>.+)\/(?P<filename>.*)$')
 
 
 def get_file_path(instance, filename):
@@ -459,10 +464,13 @@ class File(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
 
     def dl_link(self):
         # File
-        if not self.file.storage.exists(self.file.name):
+        filename = self.file.name
+        if not self.file.storage.exists(filename):
             return ""
-        
-        url = self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
+        if is_storage_local():
+            url = self.file.storage.url(filename)
+        else:
+            url = self.file.storage.url_monkeypatched(filename, response_headers={'response-content-disposition': 'attachment'})
         return url
 
     def __unicode__(self):
@@ -670,7 +678,6 @@ class Video(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
     slug = models.SlugField("URL Identifier", max_length=255, null=True)
     file = models.FileField(upload_to=get_file_path)
     handle = models.CharField(max_length=255, null=True, db_index=True)
-#    kelvinator = models.IntegerField("K-Threshold", default=15)
     objects = VideoManager()
 
     def create_ready_instance(self):
@@ -847,11 +854,41 @@ class Video(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
                 return False
         return True
 
+    def has_storage(self):
+        """Return True if we have a copy of this video on our storage."""
+        return self.file.storage.exists(self.file.name)
+
     def dl_link(self):
+        """Return fully-qualified download URL for this video, or empty string."""
         # Video
-        if not self.file.storage.exists(self.file.name):
+        videoname = self.file.name
+        if not self.file.storage.exists(videoname):
             return ""
-        return self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
+        if is_storage_local():
+            # FileSystemStorage returns a path, not a url
+            return get_site_url() + self.file.storage.url(videoname)
+        else:
+            return self.file.storage.url_monkeypatched(videoname, response_headers={'response-content-disposition': 'attachment'})
+
+    def dl_links_all(self):
+        """Return list of fully-qualified download URLs for video variants."""
+        # Video
+        if is_storage_local():
+            # FIXME: doesn't work on local sites yet
+            print "DEBUG: I don't work on local sites yet, sorry." 
+            return []
+        else:
+            # XXX: very S3 specific
+            myname  = self.file.name
+            mystore = self.file.storage
+            urlof   = mystore.url_monkeypatched
+            basepath, filename = RE_S3_PATH_FILENAME_SPLIT.match(myname).groups()
+            names = [('original', urlof(myname))]
+            for size in video_resize_options:
+                checkfor = basepath+'/'+size+'/'+filename
+                if [x.name for x in mystore.bucket.list(prefix=checkfor)]:
+                    names.append((size, urlof(checkfor, response_headers={'response-content-disposition': 'attachment'})))
+            return names
 
     def ret_url(self):
         return "https://www.youtube.com/analytics#dt=lt,fi=v-" + self.url + ",r=retention"
