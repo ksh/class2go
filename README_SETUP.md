@@ -82,19 +82,19 @@ prefix for these.
     pip install virtualenv 
     ```
 
-8. Create the sophi virtual env (if you want) 
+8. Create the class2go virtual env (if you want) 
 
     ```
-    virtualenv sophi-venv --no-site-packages    
+    virtualenv class2go-venv --no-site-packages    
     ```
 
-    This should create the sophi-venv directory under the
+    This should create the class2go-venv directory under the
     directory where this README is found.  All our django stuff
     will happen in there now.
 
 9. Start using the virtual environment that we just created.  
 
-    . ./sophi-venv/bin/activate
+    . ./class2go-venv/bin/activate
 
     WARNING:  you need to do this from whatever shell you're using.
     You can tell this because is puts an environment indicator at
@@ -139,17 +139,13 @@ prefix for these.
     pip install gdata
     ```
 
-16. Patch GData and storages
-
-    Take a look at the [gdata patch README](https://github.com/Stanford-Online/class2go/blob/master/chef/cookbooks/gdata/files/default/README.md) and the [django-storages patch README](https://github.com/Stanford-Online/class2go/tree/master/chef/cookbooks/class2go-python/files/default/README.md). Instructions for applying the patches are in these documents.
-
-17. Install Celery ecosystem
+16. Install Celery ecosystem
 
     ```
     pip install django-celery django-celery-email pytz
     ```
 
-18. Setup the account and database in MySql
+17. Setup the account and database in MySql
 
     ```
     create database class2go;  
@@ -157,7 +153,7 @@ prefix for these.
     grant all on class2go.* to class2go@'127.0.0.1' identified by 'class2gopw';  
     ```
 
-19. Set up some folders for logs and the celery database. The sqlite3 folder can be anywhere that is writable.
+18. Set up some folders for logs and the celery database. The sqlite3 folder can be anywhere that is writable.
 
     ```
     mkdir /var/log/django/  
@@ -165,7 +161,7 @@ prefix for these.
     mkdir /Users/account/sqlite3/  
     ```
 
-20. In the main folder, make a copy of database_example.py to database.py 
+19. In the main folder, make a copy of database_example.py to database.py 
 and edit the DATABASES strings as follows substituting proper values for your system.
 
     ```
@@ -185,7 +181,7 @@ and edit the DATABASES strings as follows substituting proper values for your sy
     }  
     ```
 
-21. Setup initial db from the main folder
+20. Setup initial db from the main folder
 
     ```
     ./manage.py syncdb  
@@ -197,13 +193,13 @@ and edit the DATABASES strings as follows substituting proper values for your sy
     At this point you should be able to look at the django database in
     your local mysql and see a bunch of c2g_* tables.  Yay.
 
-22. From the main folder, run server on whatever port you want:
+21. From the main folder, run server on whatever port you want:
 
     ```
     python manage.py runserver 8100
     ```
 
-23. Visit localhost:8100 in your web browser and confirm that you get a C2G page.
+22. Visit localhost:8100 in your web browser and confirm that you get a C2G page.
 
 
 

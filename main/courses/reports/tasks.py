@@ -144,7 +144,7 @@ def generate_and_email_reports(username, course_handle, requested_reports, email
             email_title, # Title
             email_message, # Message
             SERVER_EMAIL, # From
-            [staff_email, 'c2g-dev@cs.stanford.edu'], # To
+            [staff_email, ],  # To
         )
         if attach_reports_to_email:
             for report in reports:
