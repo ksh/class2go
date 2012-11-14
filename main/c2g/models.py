@@ -462,6 +462,10 @@ class File(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
         self.image = ready_instance
         self.save()
 
+    def has_storage(self):
+        """Return True if we have a copy of this file on our storage."""
+        return self.file.storage.exists(self.file.name)
+
     def dl_link(self):
         # File
         filename = self.file.name
@@ -883,11 +887,14 @@ class Video(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
             mystore = self.file.storage
             urlof   = mystore.url_monkeypatched
             basepath, filename = RE_S3_PATH_FILENAME_SPLIT.match(myname).groups()
-            names = [('original', urlof(myname))]
-            for size in video_resize_options:
+            names = []
+            for size in sorted(video_resize_options):
                 checkfor = basepath+'/'+size+'/'+filename
-                if [x.name for x in mystore.bucket.list(prefix=checkfor)]:
-                    names.append((size, urlof(checkfor, response_headers={'response-content-disposition': 'attachment'})))
+                gotback = [x for x in mystore.bucket.list(prefix=checkfor)]
+                if gotback:
+                    names.append((size, urlof(checkfor, response_headers={'response-content-disposition': 'attachment'}), gotback[0].size, video_resize_options[size][3]))
+            if not names:
+                names = [('large', urlof(myname, response_headers={'response-content-disposition': 'attachment'}), self.file.size, '')]
             return names
 
     def ret_url(self):

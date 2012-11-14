@@ -6,17 +6,15 @@
         <h4 class="pull-left"><a href="{% url 'courses.videos.views.view' common_page_data.course_prefix common_page_data.course_suffix item.video.slug %}" title="{{item.video.description}}">{{item.video.title}}</a> ({{item.video.runtime}})</h4>
         <div class="pull-right">
             {% if item.video.has_storage %}
-              {# <a href="{{item.video.dl_link}}" class="btn btn-mini" title="download"><em class="icon-download-alt"></em></a> #}
-              <div class="btn-group" style="float: left; overflow: visible">
-                  <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                    Download&nbsp;<span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
-                    {% for size, url in item.video.dl_links_all %}
-                      <li><a href="{{url}}">{{size}}</a></li>
-                    {% endfor %}
-                  </ul>
-              </div>
+                {% for tag, url, size, sizedesc in item.video.dl_links_all %}
+                <div class="btn-group" style="float: left">
+                    <a href="{{url}}">
+                        <button class="btn btn-mini" title="{{sizedesc}} ({{size|filesizeformat}})">
+                            <em class="icon-download-alt"></em>&nbsp;{{tag}}
+                        </button>
+                    </a>
+                </div>
+                {% endfor %}
             {% endif %}
             {% if item.completed_percent > 90 %}
             <div class="progress progress-success progress-striped">
