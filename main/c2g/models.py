@@ -462,8 +462,7 @@ class File(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
         if not self.file.storage.exists(self.file.name):
             return ""
         
-        url = self.file.storage.url(self.file.name, response_headers={'response-content-disposition': 'attachment'})
-#        url = self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
+        url = self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
         return url
 
     def __unicode__(self):
@@ -852,8 +851,7 @@ class Video(TimestampMixin, Stageable, Sortable, Deletable, models.Model):
         # Video
         if not self.file.storage.exists(self.file.name):
             return ""
-        return self.file.storage.url(self.file.name, response_headers={'response-content-disposition': 'attachment'})
-        #return self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
+        return self.file.storage.url_monkeypatched(self.file.name, response_headers={'response-content-disposition': 'attachment'})
 
     def ret_url(self):
         return "https://www.youtube.com/analytics#dt=lt,fi=v-" + self.url + ",r=retention"
