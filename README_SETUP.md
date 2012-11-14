@@ -149,7 +149,7 @@ prefix for these.
     pip install django-celery django-celery-email pytz
     ```
 
-18. Setup the acocunt and database in MySql
+18. Setup the account and database in MySql
 
     ```
     create database class2go;  
